@@ -1,23 +1,23 @@
-.navbar {
+.app-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  backdrop-filter: blur(16px) saturate(130%);
-  background: rgba(7,16,41,0.5);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 0;
   height: 70px;
+  width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(16px) saturate(130%);
+  background: rgba(7, 16, 41, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  width: 100%;
 }
 
-.navbar-container {
+.header-container {
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
@@ -28,7 +28,7 @@
   box-sizing: border-box;
 }
 
-.navbar-logo {
+.header-logo {
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--text);
@@ -38,14 +38,20 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: 1px;
+  transition: opacity 0.3s ease;
 }
 
-.nav-buttons {
+.header-logo:hover {
+  opacity: 0.8;
+}
+
+.header-nav {
   display: flex;
   gap: 1rem;
+  align-items: center;
 }
 
-.nav-btn {
+.header-btn {
   padding: 0.6rem 1.5rem;
   border: none;
   border-radius: 50px;
@@ -54,17 +60,19 @@
   font-weight: 500;
   transition: all 0.3s ease;
   font-size: 0.95rem;
+  display: inline-block;
 }
 
 .login-btn {
   background: transparent;
   color: var(--text);
-  border: 2px solid rgba(255,255,255,0.12);
+  border: 2px solid rgba(255, 255, 255, 0.12);
 }
 
 .login-btn:hover {
   background: white;
   color: #667eea;
+  border-color: white;
 }
 
 .signup-btn {
@@ -82,40 +90,44 @@
 .dashboard-btn {
   background: transparent;
   color: var(--text);
-  border: 2px solid rgba(255,255,255,0.12);
+  border: 2px solid rgba(255, 255, 255, 0.12);
 }
 
 .dashboard-btn:hover {
   background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255,255,255,0.3);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .logout-btn {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   color: var(--text);
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .logout-btn:hover {
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   color: white;
 }
 
 @media (max-width: 768px) {
-  .navbar-container {
+  .app-header {
+    height: 70px;
+  }
+
+  .header-container {
     padding: 0 1rem;
   }
 
-  .navbar-logo {
+  .header-logo {
     font-size: 1.4rem;
   }
 
-  .nav-btn {
+  .header-btn {
     padding: 0.5rem 0.9rem;
     font-size: 0.85rem;
   }
 
-  .nav-buttons {
+  .header-nav {
     gap: 0.4rem;
   }
 }

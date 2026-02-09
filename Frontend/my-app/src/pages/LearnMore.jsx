@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
+import './LearnMore.css'
 
 export default function LearnMore() {
   const [openSection, setOpenSection] = useState(1)
@@ -39,15 +42,9 @@ export default function LearnMore() {
   }
 
   return (
-    <main
-      style={{
-        padding: 24,
-        maxWidth: 900,
-        margin: '0 auto',
-        color: '#111',
-        lineHeight: 1.6
-      }}
-    >
+    <div className="learnmore-page">
+      <Header />
+      <main className="learnmore-content">
       <h1 style={{ marginBottom: 24 }}>Learn More</h1>
 
       <Section id={1} title="1. What FinTrack Is">
@@ -194,6 +191,8 @@ export default function LearnMore() {
           </label>
         ))}
       </Section>
-    </main>
+      </main>
+      <Footer />
+    </div>
   )
 }

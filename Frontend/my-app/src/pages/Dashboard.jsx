@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import Navbar from '../components/Navbar'
+import Header from '../components/Header'
 import VantaBackground from '../components/VantaBackground'
 import Footer from '../components/Footer'
 import SpeciesSelector from '../components/SpeciesSelector'
@@ -85,7 +85,7 @@ export default function Dashboard() {
   return (
     <div className="dashboard-page">
       <VantaBackground effect="WAVES" />
-      <Navbar />
+      <Header />
       
       <div className="dashboard-header">
         <h1>ML Environmental Analysis</h1>

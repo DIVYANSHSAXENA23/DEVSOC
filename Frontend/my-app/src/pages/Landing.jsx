@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import Navbar from '../components/Navbar'
+import Header from '../components/Header'
 import VantaBackground from '../components/VantaBackground'
 import Footer from '../components/Footer'
 import './Landing.css'
@@ -8,7 +8,7 @@ export default function Landing() {
   return (
     <div className="landing-page">
       <VantaBackground effect="WAVES" />
-      <Navbar />
+      <Header />
 
       <div className="landing-content">
         <div className="hero-section">
