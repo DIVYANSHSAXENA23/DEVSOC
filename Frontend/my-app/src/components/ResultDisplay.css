@@ -68,6 +68,46 @@
   width: 100%;
 }
 
+.result-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px }
+.summary-title{ margin:0; font-size:1.05rem; color:rgba(255,255,255,0.95) }
+.summary-meta{ display:flex; gap:10px; align-items:center }
+.summary-sub{ color:rgba(255,255,255,0.6); font-size:0.85rem }
+
+.species-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:12px }
+
+.species-card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(2,6,23,0.4);
+  transform-origin: center bottom;
+  animation: cardIn .45s ease both;
+}
+
+@keyframes cardIn{
+  from{ opacity:0; transform: translateY(12px) scale(.995) }
+  to{ opacity:1; transform: translateY(0) scale(1) }
+}
+
+.species-head{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px }
+.species-name{ font-weight:700; color: #eef6ff }
+.species-scientific{ font-size:0.85rem; color: rgba(255,255,255,0.6) }
+.species-advisory{ margin:0 0 8px 0; color: rgba(255,255,255,0.9) }
+.species-details summary{ cursor:pointer; color: var(--primary); margin-bottom:6px }
+.species-details ul{ margin:6px 0 8px 18px }
+.muted{ color: rgba(255,255,255,0.65); font-size:0.9rem }
+
+.no-species{ color: rgba(255,255,255,0.65); padding: 12px }
+
+.risk-level{ font-weight:700; font-size:0.95rem; padding:6px 10px; border-radius:10px }
+.risk-level.risk-low{ background: rgba(34,197,94,0.12); color:#86efac }
+.risk-level.risk-medium{ background: rgba(250,204,21,0.12); color:#fed7aa }
+.risk-level.risk-high{ background: rgba(239,68,68,0.12); color:#fca5a5 }
+
+/* responsive */
+@media (max-width:900px){ .species-grid{ grid-template-columns: 1fr } }
+
 .result-section {
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
