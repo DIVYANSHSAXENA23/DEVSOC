@@ -213,6 +213,67 @@ def _juvenile_risk_probability(row: pd.Series) -> float:
     return float(np.clip(row["juvenile_risk_score"] / max_score, 0.0, 1.0))
 
 
+def generate_heatmap_points(
+    full_df: pd.DataFrame,
+    state: str,
+    river_name: str,
+    weight: str = "juvenile_risk_prob",
+) -> List[Dict[str, float]]:
+    """
+    Returns points for frontend heatmap layers (e.g., Leaflet.heat).
+
+    Output format: [{ "lat": <float>, "lon": <float>, "value": <float> }, ...]
+
+    - Filters by state + river_name (requires `river_name` column)
+    - `weight` can be:
+        - "juvenile_risk_prob" (default): derived from juvenile_risk_score
+        - "juvenile_risk_score": 0..6
+        - "chlorophyll_mg_m3": numeric
+        - "depth_m": numeric
+    """
+    if "river_name" not in full_df.columns:
+        raise ValueError(
+            "Dataset does not contain 'river_name' column. "
+            "Please use the updated CSV (e.g., converted_final.csv)."
+        )
+
+    mask = (full_df["state"].str.lower() == state.lower()) & (
+        full_df["river_name"].astype(str).str.lower() == river_name.lower()
+    )
+    df = full_df.loc[mask].copy()
+
+    if df.empty:
+        return []
+
+    if weight == "juvenile_risk_prob":
+        df["__w"] = df.apply(_juvenile_risk_probability, axis=1)
+    elif weight in df.columns:
+        df["__w"] = pd.to_numeric(df[weight], errors="coerce")
+    elif weight == "juvenile_risk_score":
+        df["__w"] = pd.to_numeric(df["juvenile_risk_score"], errors="coerce")
+    else:
+        raise ValueError(f"Unknown weight: {weight}")
+
+    df = df.dropna(subset=["latitude", "longitude", "__w"])
+    # Clamp for sanity in heatmap rendering
+    w = df["__w"].astype(float)
+    if weight == "juvenile_risk_prob":
+        df["__w"] = np.clip(w, 0.0, 1.0)
+    else:
+        # Normalize arbitrary weights to 0..1 for consistent rendering
+        w_min = float(w.min())
+        w_max = float(w.max())
+        if w_max > w_min:
+            df["__w"] = (w - w_min) / (w_max - w_min)
+        else:
+            df["__w"] = 1.0
+
+    return [
+        {"lat": float(r["latitude"]), "lon": float(r["longitude"]), "value": float(r["__w"])}
+        for _, r in df.iterrows()
+    ]
+
+
 def _derive_risk_factors(row: pd.Series, zone: str) -> List[str]:
     reasons: List[str] = []
     if row.get("juvenile_dominance", False):
@@ -352,7 +413,14 @@ def generate_advisory_json(
         recommended_gear=gear_rec,
         economic_note=econ_note,
     )
-    return asdict(output)
+    out = asdict(output)
+    # If the new dataset includes pre-written advisory text, expose it for downstream use.
+    if "advisory_text" in full_df.columns and pd.notna(row.get("advisory_text")):
+        out["dataset_advisory_text"] = str(row.get("advisory_text"))
+    # If river_name exists in dataset, expose it here too.
+    if "river_name" in full_df.columns and pd.notna(row.get("river_name")):
+        out["river_name"] = str(row.get("river_name"))
+    return out
 
 
 def generate_advisories_for_state(
@@ -362,20 +430,26 @@ def generate_advisories_for_state(
     river_name: str,
 ) -> List[Dict[str, Any]]:
     """
-    Filter records by state, then return advisory JSON for each matching row.
-    River name is attached to each advisory JSON for frontend display.
+    Filter records by state AND river_name, then return advisory JSON for each matching row.
 
-    Note: current dataset does not contain an explicit river column, so `river_name`
-    is used only as a label for your frontend, not as a filter.
+    Note: `river_name` is now a real column in the updated dataset (e.g., `converted_final.csv`).
     """
-    mask = full_df["state"].str.lower() == state.lower()
+    if "river_name" not in full_df.columns:
+        raise ValueError(
+            "Dataset does not contain 'river_name' column. "
+            "Please use the updated CSV (e.g., converted_final.csv)."
+        )
+
+    mask = (full_df["state"].str.lower() == state.lower()) & (
+        full_df["river_name"].astype(str).str.lower() == river_name.lower()
+    )
     subset = full_df[mask].reset_index(drop=True)
 
     advisories: List[Dict[str, Any]] = []
     for i in range(len(subset)):
         row_json = generate_advisory_json(model, subset, i)
-        # Attach river_name to the JSON for your API
-        row_json["river_name"] = river_name
+        # Ensure river_name is present in response (comes from dataset)
+        row_json["river_name"] = str(subset.iloc[i]["river_name"])
         advisories.append(row_json)
     return advisories
 

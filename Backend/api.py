@@ -19,6 +19,7 @@ from ML.fish_advisory_pipeline import (
     load_and_preprocess,
     train_zone_classifier,
     generate_advisories_for_state,
+    generate_heatmap_points,
 )
 
 # Initialize FastAPI app
@@ -77,6 +78,30 @@ class AdvisoryListResponse(BaseModel):
     advisories: List[AdvisoryResponse]
 
 
+class HeatmapRequest(BaseModel):
+    state: str = Field(..., description="Indian coastal state name (e.g., 'Kerala')")
+    river_name: str = Field(..., description="River name (e.g., 'Periyar')")
+    weight: str = Field(
+        default="juvenile_risk_prob",
+        description="Heatmap weight: juvenile_risk_prob | juvenile_risk_score | chlorophyll_mg_m3 | depth_m",
+    )
+
+
+class HeatmapPoint(BaseModel):
+    lat: float
+    lon: float
+    value: float
+
+
+class HeatmapResponse(BaseModel):
+    success: bool
+    state: str
+    river_name: str
+    weight: str
+    count: int
+    points: List[HeatmapPoint]
+
+
 def load_model():
     """Load and train the model once on startup."""
     global model, df_full, model_loaded
@@ -87,7 +112,7 @@ def load_model():
     # Get data path from environment variable or use default
     data_path = os.getenv(
         "FISH_DATA_PATH",
-        r"c:\Users\Divyansh Saxena\Desktop\indian_fish_dataset.csv"
+        r"c:\Users\Divyansh Saxena\Desktop\converted_final.csv"
     )
     
     # Check if file exists
@@ -142,7 +167,7 @@ async def get_advisory(request: AdvisoryRequest):
     Get fish advisories for a given state and river.
     
     Returns a list of advisory objects, one for each fish species record
-    found in the specified state.
+    found in the specified state AND river_name.
     """
     if not model_loaded:
         raise HTTPException(
@@ -195,6 +220,40 @@ async def get_available_states():
         "count": len(states),
         "states": states
     }
+
+
+@app.post("/heatmap", response_model=HeatmapResponse)
+async def get_heatmap(request: HeatmapRequest):
+    """
+    Returns weighted lat/lon points for a frontend heatmap layer for a given state + river.
+    """
+    if not model_loaded or df_full is None:
+        raise HTTPException(status_code=503, detail="Model not loaded. Please wait for initialization.")
+
+    try:
+        points = generate_heatmap_points(
+            full_df=df_full,
+            state=request.state,
+            river_name=request.river_name,
+            weight=request.weight,
+        )
+        if not points:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No records found for state={request.state}, river_name={request.river_name}",
+            )
+        return {
+            "success": True,
+            "state": request.state,
+            "river_name": request.river_name,
+            "weight": request.weight,
+            "count": len(points),
+            "points": points,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating heatmap: {str(e)}")
 
 
 if __name__ == "__main__":

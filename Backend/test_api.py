@@ -21,7 +21,7 @@ def test_api_logic():
     print("=" * 50)
     
     # Use the default data path
-    data_path = r"c:\Users\Divyansh Saxena\Desktop\indian_fish_dataset.csv"
+    data_path = r"c:\Users\Divyansh Saxena\Desktop\converted_final.csv"
     
     if not Path(data_path).exists():
         print(f"ERROR: Dataset file not found at: {data_path}")
