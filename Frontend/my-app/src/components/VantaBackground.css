@@ -1,0 +1,15 @@
+.vanta-wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  background: transparent;
+}
+
+/* ensure underlying pages place content above the vanta layer */
+.vanta-wrapper + * {
+  position: relative;
+  z-index: 1;
+}

@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Navbar from '../components/Navbar'
+import VantaBackground from '../components/VantaBackground'
+import Footer from '../components/Footer'
 import SpeciesSelector from '../components/SpeciesSelector'
 import LocationInput from '../components/LocationInput'
 import RiverSelector from '../components/RiverSelector'
@@ -82,6 +84,7 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-page">
+      <VantaBackground effect="WAVES" />
       <Navbar />
       
       <div className="dashboard-header">
@@ -121,6 +124,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
