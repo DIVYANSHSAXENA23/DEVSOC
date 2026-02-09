@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import VantaBackground from '../components/VantaBackground'
@@ -13,6 +13,14 @@ export default function Signup() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+
+  // Redirect if already logged in
+  useEffect(() => {
+    const user = localStorage.getItem('user')
+    if (user) {
+      navigate('/dashboard')
+    }
+  }, [navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -52,8 +60,9 @@ export default function Signup() {
       <VantaBackground effect="WAVES" />
       <Navbar />
 
-      <div className="signup-container">
-        <div className="signup-card">
+      <main className="signup-main">
+        <div className="signup-container">
+          <div className="signup-card">
           <h2>Create Account</h2>
           <p className="signup-subtitle">Sign up to access the dashboard</p>
 
@@ -113,9 +122,10 @@ export default function Signup() {
             </button>
           </form>
 
-          <p className="signup-footer">Already have an account? <a href="/login">Sign in</a></p>
+            <p className="signup-footer">Already have an account? <a href="/login">Sign in</a></p>
+          </div>
         </div>
-      </div>
+      </main>
       <Footer />
     </div>
   )

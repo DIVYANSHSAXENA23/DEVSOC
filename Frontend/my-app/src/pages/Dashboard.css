@@ -13,31 +13,35 @@
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2.5rem 2rem;
   color: white;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
+  width: 100%;
 }
 
 .dashboard-header h1 {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 2.2rem;
+  font-weight: 900;
   margin: 0;
+  letter-spacing: -0.5px;
 }
 
 .logout-btn {
-  padding: 0.6rem 1.5rem;
+  padding: 0.7rem 1.8rem;
   border: 2px solid rgba(255, 255, 255, 0.3);
   background: transparent;
   color: white;
   border-radius: 50px;
   cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  font-weight: 700;
+  transition: all 300ms cubic-bezier(0.23, 1, 0.320, 1);
   font-size: 0.95rem;
 }
 
 .logout-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
 }
 
 .dashboard-container {
@@ -87,17 +91,29 @@
 }
 
 .submit-button {
-  padding: 0.95rem;
+  padding: 1.1rem;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
   color: white;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.18s ease;
-  margin-top: 0.5rem;
-  box-shadow: 0 10px 36px rgba(102, 126, 234, 0.36);
+  transition: all 300ms cubic-bezier(0.23, 1, 0.320, 1);
+  margin-top: 0.9rem;
+  box-shadow: 0 10px 36px rgba(102, 126, 234, 0.3);
+  width: 100%;
+}
+
+.submit-button:hover:not(:disabled) {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 50px rgba(102, 126, 234, 0.5);
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 }
 
 .submit-button:hover:not(:disabled) {

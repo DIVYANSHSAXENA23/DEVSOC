@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Navbar from '../components/Navbar'
@@ -17,11 +17,20 @@ export default function Dashboard() {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [isAuthed, setIsAuthed] = useState(false)
   const navigate = useNavigate()
 
   // Check if user is logged in
-  if (!localStorage.getItem('user')) {
-    navigate('/login')
+  useEffect(() => {
+    const user = localStorage.getItem('user')
+    if (!user) {
+      navigate('/login')
+    } else {
+      setIsAuthed(true)
+    }
+  }, [navigate])
+
+  if (!isAuthed) {
     return null
   }
 

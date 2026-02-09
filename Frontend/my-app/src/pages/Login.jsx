@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import VantaBackground from '../components/VantaBackground'
@@ -11,6 +11,14 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+
+  // Redirect if already logged in
+  useEffect(() => {
+    const user = localStorage.getItem('user')
+    if (user) {
+      navigate('/dashboard')
+    }
+  }, [navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()

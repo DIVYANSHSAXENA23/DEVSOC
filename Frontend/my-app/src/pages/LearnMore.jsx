@@ -1,199 +1,134 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
+import VantaBackground from '../components/VantaBackground'
+import './LearnMore.css'
+
+function Chevron({ open }) {
+  return (
+    <span className={`chev ${open ? 'open' : ''}`} aria-hidden>
+      ›
+    </span>
+  )
+}
+
+const Section = ({ id, title, isOpen, onToggle, children }) => {
+  const contentRef = useRef(null)
+  const [height, setHeight] = useState('72px')
+
+  useEffect(() => {
+    if (contentRef.current) {
+      const full = `${contentRef.current.scrollHeight}px`
+      setHeight(isOpen ? full : '72px')
+    }
+  }, [isOpen])
+
+  return (
+    <section className="lm-section" aria-expanded={isOpen}>
+      <button className="lm-header" onClick={() => onToggle(id)}>
+        <div className="lm-title">{title}</div>
+        <Chevron open={isOpen} />
+      </button>
+
+      <div
+        ref={contentRef}
+        className={`lm-content ${isOpen ? 'open' : ''}`}
+        style={{ maxHeight: height }}
+      >
+        <div className="lm-content-inner">{children}</div>
+      </div>
+    </section>
+  )
+}
 
 export default function LearnMore() {
   const [openSection, setOpenSection] = useState(1)
   const [checked, setChecked] = useState({})
 
-  const toggleCheck = (i) =>
-    setChecked((prev) => ({ ...prev, [i]: !prev[i] }))
-
-  const Section = ({ id, title, children }) => {
-    const isOpen = openSection === id
-    return (
-      <section style={{ marginBottom: 24 }}>
-        <h2
-          onClick={() => setOpenSection(isOpen ? null : id)}
-          style={{
-            cursor: 'pointer',
-            background: '#f3f4f6',
-            padding: '12px 16px',
-            borderRadius: 8
-          }}
-        >
-          {title}
-        </h2>
-        {isOpen && (
-          <div
-            style={{
-              padding: '16px',
-              marginTop: 8,
-              borderRadius: 8,
-              background: '#e0f2fe' // single background color for expanded content
-            }}
-          >
-            {children}
-          </div>
-        )}
-      </section>
-    )
-  }
+  const toggleCheck = (i) => setChecked((p) => ({ ...p, [i]: !p[i] }))
+  const toggleSection = (id) => setOpenSection((s) => (s === id ? null : id))
 
   return (
-    <main
-      style={{
-        padding: 24,
-        maxWidth: 900,
-        margin: '0 auto',
-        color: '#111',
-        lineHeight: 1.6
-      }}
-    >
-      <h1 style={{ marginBottom: 24 }}>Learn More</h1>
+    <div className="learnmore-page">
+      <VantaBackground effect="WAVES" />
+      <Navbar />
 
-      <Section id={1} title="1. What FinTrack Is">
-        <p>
-          FinTrack is an advisory tool that provides location-specific guidance
-          about fishing conditions and risks. It summarizes available
-          environmental information and translates it into clear advisories for
-          fish species and river locations so users can make better-informed
-          decisions.
-        </p>
-      </Section>
+      <main className="lm-main">
+        <header className="lm-hero">
+          <h1>Learn More</h1>
+          <p className="lm-sub">How FinTrack produces actionable advisories</p>
+        </header>
 
-      <Section id={2} title="2. How FinTrack Works">
-        <ul>
-          <li>You enter a state name and a river name.</li>
-          <li>
-            The system locates available data for the requested river and nearby
-            monitoring points.
-          </li>
-          <li>
-            Data and models are used to assess conditions that affect fish and
-            fishing safety.
-          </li>
-          <li>
-            For each species present, FinTrack returns advisory details including
-            a risk zone and practical recommendations.
-          </li>
-        </ul>
-        <p style={{ color: '#374151' }}>
-          Results are presented as human-readable advisories organized by species
-          and location.
-        </p>
-      </Section>
+        <div className="lm-grid">
+          <Section id={1} title="What FinTrack Is" isOpen={openSection === 1} onToggle={toggleSection}>
+            <p>
+              FinTrack is an advisory tool that provides location-specific guidance about fishing
+              conditions and risks. It summarizes environmental data and presents clear advisories
+              organized by species and site to help users make safer, better-informed choices.
+            </p>
+          </Section>
 
-      <Section id={3} title="3. Understanding Advisory Zones">
-        <ul>
-          <li>
-            <strong>Green — Low risk</strong>: Suitable for fishing under normal
-            practices. No major restrictions are recommended.
-          </li>
-          <li>
-            <strong>Yellow — Moderate risk</strong>: Controlled or restricted
-            fishing is advised. Exercise caution and limit handling or catch.
-          </li>
-          <li>
-            <strong>Red — High risk</strong>: Temporary closure or minimal
-            fishing recommended. Avoid fishing until conditions improve.
-          </li>
-        </ul>
-        <p style={{ color: '#374151', marginTop: 12 }}>
-          Zones are guidance tools. Local regulations always take precedence.
-        </p>
-      </Section>
+          <Section id={2} title="How FinTrack Works" isOpen={openSection === 2} onToggle={toggleSection}>
+            <ul className="lm-list">
+              <li>You enter a state and river name.</li>
+              <li>The system gathers available monitoring data for the area.</li>
+              <li>Models assess conditions and generate species-level advisories.</li>
+              <li>Results are translated into plain-language recommendations.</li>
+            </ul>
+          </Section>
 
-      <Section id={4} title="4. Understanding Advisory Data">
-        <ul>
-          <li>
-            <strong>Species</strong>: The fish species the advisory applies to.
-          </li>
-          <li>
-            <strong>Latitude / Longitude</strong>: Approximate coordinates where
-            the advisory applies.
-          </li>
-          <li>
-            <strong>Zone (Green / Yellow / Red)</strong>: Summary of risk and
-            activity level.
-          </li>
-          <li>
-            <strong>Risk factors</strong>: Key reasons for the advisory.
-          </li>
-          <li>
-            <strong>Fishing advisory</strong>: Plain-language recommendation.
-          </li>
-          <li>
-            <strong>Recommended gear</strong>: Suggested gear or handling practices.
-          </li>
-          <li>
-            <strong>Economic note</strong>: Brief remark on potential economic implications.
-          </li>
-          <li>
-            <strong>River name</strong>: The river associated with the advisory.
-          </li>
-        </ul>
-      </Section>
+          <Section id={3} title="Understanding Advisory Zones" isOpen={openSection === 3} onToggle={toggleSection}>
+            <div className="zones">
+              <div className="zone green"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="#9de6a1"/><path d="M8.5 12.5c1.333-2 4.667-2 6 0" stroke="#145214" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>Green — Low risk</div>
+              <div className="zone yellow"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="#fff0a8"/><path d="M12 7v6l3 3" stroke="#6b4b00" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>Yellow — Moderate risk</div>
+              <div className="zone red"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="#ffb7b7"/><path d="M7 7l10 10M17 7L7 17" stroke="#5e0b0b" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>Red — High risk</div>
+            </div>
+            <p className="muted">Zones are guidance. Follow local regulations first.</p>
+          </Section>
 
-      <Section id={5} title="5. Why This Matters">
-        <ul>
-          <li>
-            <strong>Health</strong>: Reduces exposure to contaminated fish.
-          </li>
-          <li>
-            <strong>Environment</strong>: Protects juvenile and vulnerable species.
-          </li>
-          <li>
-            <strong>Livelihoods</strong>: Supports planning for fishers, markets, and businesses.
-          </li>
-          <li>
-            <strong>Resource management</strong>: Advisory data can inform temporary restrictions and recovery actions.
-          </li>
-        </ul>
-      </Section>
+          <Section id={4} title="Understanding Advisory Data" isOpen={openSection === 4} onToggle={toggleSection}>
+            <ul className="lm-list">
+              <li><strong>Species</strong>: Which fish are affected.</li>
+              <li><strong>Coordinates</strong>: Approximate location of advisory.</li>
+              <li><strong>Zone</strong>: Risk level and activity guidance.</li>
+              <li><strong>Risk factors</strong>: Why the advisory was issued.</li>
+            </ul>
+          </Section>
 
-      <Section id={6} title="6. Data & Technology (High-Level Overview)">
-        <ul>
-          <li>Environmental and historical data sources.</li>
-          <li>Statistical and ML-based risk estimation.</li>
-          <li>Results presented with clear explanations.</li>
-          <li>Accuracy depends on data quality and coverage.</li>
-        </ul>
-      </Section>
+          <Section id={5} title="Why This Matters" isOpen={openSection === 5} onToggle={toggleSection}>
+            <ul className="lm-list">
+              <li><strong>Health</strong>: Reduce exposure to contaminants.</li>
+              <li><strong>Environment</strong>: Protect sensitive species.</li>
+              <li><strong>Livelihoods</strong>: Help planners and fishers act safely.</li>
+            </ul>
+          </Section>
 
-      <Section id={7} title="7. How to Use the Results">
-        {[
-          'Read the zone first (Green, Yellow, Red).',
-          'Review risk factors and advisory text.',
-          'Confirm location using coordinates.',
-          'Follow recommended gear practices.',
-          'Consider economic notes for planning.',
-          'Use extra caution for Yellow or Red zones.'
-        ].map((item, i) => (
-          <label
-            key={i}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              cursor: 'pointer',
-              marginBottom: 8
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={!!checked[i]}
-              onChange={() => toggleCheck(i)}
-            />
-            <span
-              style={{
-                textDecoration: checked[i] ? 'line-through' : 'none',
-                color: checked[i] ? '#6b7280' : '#111'
-              }}
-            >
-              {item}
-            </span>
-          </label>
-        ))}
-      </Section>
-    </main>
+          <Section id={6} title="Data & Technology" isOpen={openSection === 6} onToggle={toggleSection}>
+            <ul className="lm-list">
+              <li>Environmental monitoring and historical datasets.</li>
+              <li>Statistical and ML-based risk estimation pipelines.</li>
+              <li>Clear summaries with confidence notes based on data quality.</li>
+            </ul>
+          </Section>
+
+          <Section id={7} title="How to Use the Results" isOpen={openSection === 7} onToggle={toggleSection}>
+            {[
+              'Read the zone first (Green, Yellow, Red).',
+              'Review risk factors and advisory text.',
+              'Confirm location using coordinates.',
+              'Follow recommended gear and handling practice.',
+              'Use extra caution for Yellow or Red zones.'
+            ].map((item, i) => (
+              <label key={i} className={`lm-check ${checked[i] ? 'done' : ''}`}>
+                <input type="checkbox" checked={!!checked[i]} onChange={() => toggleCheck(i)} />
+                <span className="lm-check-label">{item}</span>
+              </label>
+            ))}
+          </Section>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
   )
 }

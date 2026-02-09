@@ -12,7 +12,7 @@ const loadScript = (src) =>
     document.head.appendChild(script)
   })
 
-export default function VantaBackground({ effect = 'WAVES', color = 0x667eea }) {
+export default function VantaBackground({ effect = 'WAVES', color = 0x5a8df0, options = {} }) {
   const ref = useRef(null)
   const vantaRef = useRef(null)
 
@@ -36,7 +36,7 @@ export default function VantaBackground({ effect = 'WAVES', color = 0x667eea }) 
 
         if (window.VANTA && ref.current && !vantaRef.current && mounted) {
           const ctor = window.VANTA[effect] || window.VANTA.WAVES
-          vantaRef.current = ctor({
+          const defaultOpts = {
             el: ref.current,
             THREE: window.THREE,
             mouseControls: true,
@@ -46,7 +46,16 @@ export default function VantaBackground({ effect = 'WAVES', color = 0x667eea }) 
             scaleMobile: 1.0,
             color,
             backgroundColor: 0x071029,
-          })
+          }
+
+          const merged = { ...defaultOpts, ...options }
+          if (effect === 'WAVES') {
+            merged.waveHeight = merged.waveHeight ?? 18
+            merged.waveSpeed = merged.waveSpeed ?? 0.6
+            merged.zoom = merged.zoom ?? 0.78
+          }
+
+          vantaRef.current = ctor(merged)
         }
       } catch (err) {
         // Fail quietly — Vanta is a progressive enhancement

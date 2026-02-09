@@ -1,0 +1,324 @@
+.learnmore-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+  scroll-behavior: smooth;
+}
+
+.lm-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+  padding-top: 0;
+  color: var(--text);
+  position: relative;
+  z-index: 5;
+}
+
+.lm-hero {
+  position: sticky;
+  top: 70px;
+  z-index: 10;
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 2rem 0;
+  background: linear-gradient(180deg, rgba(5, 10, 20, 0.98) 0%, rgba(5, 10, 20, 0.9) 100%);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  animation: slideDown 600ms ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lm-hero h1 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  margin-bottom: 0.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.lm-sub {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.lm-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.2rem;
+  animation: fadeInUp 700ms ease-out 200ms backwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lm-section {
+  background: rgba(11, 18, 36, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 16px 60px rgba(2, 6, 23, 0.75);
+  transition: all 280ms cubic-bezier(0.23, 1, 0.320, 1);
+  position: relative;
+  z-index: 2;
+}
+
+.lm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 1.1rem 1.5rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 700;
+  transition: all 200ms ease;
+  user-select: none;
+}
+
+.lm-section:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 28px 90px rgba(2, 6, 23, 0.9);
+  background: rgba(11, 18, 36, 0.9);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.lm-header:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  color: var(--primary);
+}
+
+.lm-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.chev {
+  display: inline-block;
+  transform: rotate(90deg);
+  transition: transform 300ms cubic-bezier(0.23, 1, 0.320, 1), color 200ms ease;
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+.chev.open {
+  transform: rotate(-90deg);
+  color: var(--primary);
+  opacity: 1;
+}
+
+.lm-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 380ms cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.lm-content.open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.lm-content-inner {
+  padding: 1.5rem 1.5rem 1.75rem 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.7;
+  font-size: 0.98rem;
+  letter-spacing: 0.2px;
+}
+
+.lm-content.open .lm-content-inner {
+  animation: fadeInContent 400ms ease-out;
+}
+
+@keyframes fadeInContent {
+  from {
+    opacity: 0.7;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lm-list {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.lm-list li {
+  padding: 0.6rem 0;
+  padding-left: 1.8rem;
+  position: relative;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.lm-list li::before {
+  content: '◆';
+  position: absolute;
+  left: 0.4rem;
+  color: var(--primary);
+  font-size: 0.6rem;
+  top: 0.85rem;
+}
+
+.zones {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.zone {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.85);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.zone:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.zone.green { background: linear-gradient(135deg, #9de6a1, #7dd98e); }
+.zone.yellow { background: linear-gradient(135deg, #fff0a8, #ffe68e); }
+.zone.red { background: linear-gradient(135deg, #ffb7b7, #ff9090); }
+
+.muted {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.92rem;
+  font-style: italic;
+  margin-top: 0.8rem;
+}
+
+.lm-check {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 10px;
+  transition: all 200ms ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.lm-check:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.lm-header .icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  margin-left: 8px;
+  opacity: 0.9;
+}
+
+.zone svg { width: 16px; height: 16px; display: inline-block; }
+
+
+.lm-check input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 200ms ease;
+}
+
+.lm-check input:hover {
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+.lm-check.done {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.lm-check.done .lm-check-label {
+  text-decoration: line-through;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.lm-check-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+@media (min-width: 860px) {
+  .lm-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .lm-section:nth-child(7) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .lm-main {
+    padding: 1.5rem 1rem;
+  }
+  
+  .lm-hero {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem 0;
+  }
+  
+  .lm-content-inner {
+    padding: 1.2rem 1.25rem 1.5rem 1.25rem;
+  }
+  
+  .lm-header {
+    padding: 1rem 1.2rem;
+  }
+  
+  .zones {
+    gap: 0.6rem;
+    flex-direction: column;
+  }
+  
+  .zone {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

@@ -1,10 +1,21 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import VantaBackground from '../components/VantaBackground'
 import Footer from '../components/Footer'
 import './Landing.css'
 
 export default function Landing() {
+  const navigate = useNavigate()
+
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    const user = localStorage.getItem('user')
+    if (user) {
+      navigate('/dashboard')
+    }
+  }, [navigate])
+
   return (
     <div className="landing-page">
       <VantaBackground effect="WAVES" />
