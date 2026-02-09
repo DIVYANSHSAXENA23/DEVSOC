@@ -81,9 +81,9 @@ export default function Landing() {
             <Link to="/login" className="btn btn-primary">
               Get Started
             </Link>
-            <a href="#" className="btn btn-secondary">
+            <Link to="/learn-more" className="btn btn-secondary">
               Learn More
-            </a>
+            </Link>
           </div>
         </div>
       </div>
