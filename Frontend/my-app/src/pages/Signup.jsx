@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Navbar from '../components/Navbar'
+import Header from '../components/Header'
 import VantaBackground from '../components/VantaBackground'
 import Footer from '../components/Footer'
 import './Signup.css'
@@ -58,7 +58,7 @@ export default function Signup() {
   return (
     <div className="signup-page">
       <VantaBackground effect="WAVES" />
-      <Navbar />
+      <Header />
 
       <main className="signup-main">
         <div className="signup-container">

@@ -11,6 +11,9 @@
   height: 70px;
   display: flex;
   align-items: center;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   width: 100%;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
@@ -23,6 +26,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .navbar-logo {

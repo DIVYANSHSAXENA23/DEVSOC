@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useRef, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -40,6 +41,12 @@ const Section = ({ id, title, isOpen, onToggle, children }) => {
     </section>
   )
 }
+=======
+import React, { useState } from 'react'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
+import './LearnMore.css'
+>>>>>>> fa0824191a54e728956f79612194da43b0a9637f
 
 export default function LearnMore() {
   const [openSection, setOpenSection] = useState(1)
@@ -50,8 +57,14 @@ export default function LearnMore() {
 
   return (
     <div className="learnmore-page">
+<<<<<<< HEAD
       <VantaBackground effect="WAVES" />
       <Navbar />
+=======
+      <Header />
+      <main className="learnmore-content">
+      <h1 style={{ marginBottom: 24 }}>Learn More</h1>
+>>>>>>> fa0824191a54e728956f79612194da43b0a9637f
 
       <main className="lm-main">
         <header className="lm-hero">
@@ -103,6 +116,7 @@ export default function LearnMore() {
             </ul>
           </Section>
 
+<<<<<<< HEAD
           <Section id={6} title="Data & Technology" isOpen={openSection === 6} onToggle={toggleSection}>
             <ul className="lm-list">
               <li>Environmental monitoring and historical datasets.</li>
@@ -128,6 +142,44 @@ export default function LearnMore() {
         </div>
       </main>
 
+=======
+      <Section id={7} title="7. How to Use the Results">
+        {[
+          'Read the zone first (Green, Yellow, Red).',
+          'Review risk factors and advisory text.',
+          'Confirm location using coordinates.',
+          'Follow recommended gear practices.',
+          'Consider economic notes for planning.',
+          'Use extra caution for Yellow or Red zones.'
+        ].map((item, i) => (
+          <label
+            key={i}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              cursor: 'pointer',
+              marginBottom: 8
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={!!checked[i]}
+              onChange={() => toggleCheck(i)}
+            />
+            <span
+              style={{
+                textDecoration: checked[i] ? 'line-through' : 'none',
+                color: checked[i] ? '#6b7280' : '#111'
+              }}
+            >
+              {item}
+            </span>
+          </label>
+        ))}
+      </Section>
+      </main>
+>>>>>>> fa0824191a54e728956f79612194da43b0a9637f
       <Footer />
     </div>
   )

@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 import { Link, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import Navbar from '../components/Navbar'
+=======
+import { Link } from 'react-router-dom'
+import Header from '../components/Header'
+>>>>>>> fa0824191a54e728956f79612194da43b0a9637f
 import VantaBackground from '../components/VantaBackground'
 import Footer from '../components/Footer'
 import './Landing.css'
@@ -19,7 +24,7 @@ export default function Landing() {
   return (
     <div className="landing-page">
       <VantaBackground effect="WAVES" />
-      <Navbar />
+      <Header />
 
       <div className="landing-content">
         <div className="hero-section">

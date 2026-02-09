@@ -7,6 +7,8 @@
   overflow-x: hidden;
   overflow-y: auto;
   background: #0a0e27;
+  padding-bottom: 70px;
+  margin: 0;
 }
 
 .landing-content {
@@ -17,7 +19,7 @@
   padding: 2rem;
   position: relative;
   z-index: 10;
-  padding-top: calc(70px + 2rem);
+  margin-top: 70px;
 }
 
 .hero-section {
