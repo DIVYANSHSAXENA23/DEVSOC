@@ -18,7 +18,7 @@ pip install -r ML/requirements.txt
 python ML/fish_advisory_pipeline.py --state "Kerala" --river-name "Periyar"
 ```
 
-The script will print:
+The script will prnt:
 
 - a brief model accuracy summary, and  
 - a JSON array of advisory objects, each containing:
