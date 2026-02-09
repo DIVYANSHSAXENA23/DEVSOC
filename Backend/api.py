@@ -112,7 +112,7 @@ def load_model():
     # Get data path from environment variable or use default
     data_path = os.getenv(
         "FISH_DATA_PATH",
-        r"c:\Users\Divyansh Saxena\Desktop\converted_final.csv"
+        "converted_final.csv"
     )
     
     # Check if file exists
