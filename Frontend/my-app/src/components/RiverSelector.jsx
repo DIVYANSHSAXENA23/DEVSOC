@@ -1,50 +1,60 @@
 import { useState, useRef, useEffect } from 'react'
+import axios from 'axios'
+import { getBackendBase } from '../api'
 import './FormComponents.css'
 
-const WATER_BODIES = [
-  // Major Rivers
-  { name: 'Ganga', type: 'River', state: 'Multiple' },
-  { name: 'Yamuna', type: 'River', state: 'Multiple' },
-  { name: 'Brahmaputra', type: 'River', state: 'Multiple' },
-  { name: 'Godavari', type: 'River', state: 'Multiple' },
-  { name: 'Krishna', type: 'River', state: 'Multiple' },
-  { name: 'Narmada', type: 'River', state: 'Multiple' },
-  { name: 'Indus', type: 'River', state: 'Multiple' },
-  { name: 'Sutlej', type: 'River', state: 'Multiple' },
-  { name: 'Beas', type: 'River', state: 'Punjab' },
-  { name: 'Ravi', type: 'River', state: 'Punjab' },
-  { name: 'Chambal', type: 'River', state: 'Multiple' },
-  { name: 'Mahanadi', type: 'River', state: 'Odisha' },
-  { name: 'Tapti', type: 'River', state: 'Multiple' },
-  
-  // Estuaries
-  { name: 'Sundarbans Estuary', type: 'Estuary', state: 'West Bengal' },
-  { name: 'Hooghly Estuary', type: 'Estuary', state: 'West Bengal' },
-  { name: 'Chilika Lagoon', type: 'Estuary', state: 'Odisha' },
-  { name: 'Vembanad Lagoon', type: 'Estuary', state: 'Kerala' },
-  
-  // Coastal Stretches
-  { name: 'Arabian Sea Coast', type: 'Coastal Stretch', state: 'Multiple' },
-  { name: 'Bay of Bengal Coast', type: 'Coastal Stretch', state: 'Multiple' },
-  { name: 'Indian Ocean Coast', type: 'Coastal Stretch', state: 'Multiple' },
-]
+// Fallback from CSV so rivers show even when backend is not running
+const STATE_RIVERS_FALLBACK = {
+  'Andhra Pradesh': ['Godavari', 'Krishna', 'Penna'],
+  'Gujarat': ['Mahi', 'Narmada', 'Sabarmati', 'Tapi'],
+  'Karnataka': ['Kaveri', 'Krishna', 'Tungabhadra'],
+  'Kerala': ['Bharathapuzha', 'Chaliyar', 'Pamba', 'Periyar'],
+  'Maharashtra': ['Godavari', 'Krishna', 'Tapi', 'Wardha'],
+  'Odisha': ['Baitarani', 'Brahmani', 'Mahanadi'],
+  'Tamil Nadu': ['Kaveri', 'Palar', 'Vaigai'],
+  'West Bengal': ['Damodar', 'Hooghly', 'Subarnarekha', 'Teesta'],
+}
 
-export default function RiverSelector({ value, onChange }) {
+export default function RiverSelector({ value, onChange, state: selectedState }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [filtered, setFiltered] = useState(WATER_BODIES)
+  const [rivers, setRivers] = useState([])
+  const [filtered, setFiltered] = useState([])
   const [searchTerm, setSearchTerm] = useState(value)
+  const [loading, setLoading] = useState(false)
   const containerRef = useRef(null)
 
   useEffect(() => {
-    if (searchTerm) {
-      const results = WATER_BODIES.filter((wb) =>
-        wb.name.toLowerCase().includes(searchTerm.toLowerCase())
+    if (!selectedState) {
+      setRivers([])
+      setFiltered([])
+      return
+    }
+    setLoading(true)
+    const url = getBackendBase()
+    axios.get(`${url}/rivers`, { params: { state: selectedState }, timeout: 8000 })
+      .then((res) => {
+        const list = res.data?.rivers ?? []
+        setRivers(list.length > 0 ? list : (STATE_RIVERS_FALLBACK[selectedState] || []))
+        setFiltered(list.length > 0 ? list : (STATE_RIVERS_FALLBACK[selectedState] || []))
+      })
+      .catch(() => {
+        const fallback = STATE_RIVERS_FALLBACK[selectedState] || []
+        setRivers(fallback)
+        setFiltered(fallback)
+      })
+      .finally(() => setLoading(false))
+  }, [selectedState])
+
+  useEffect(() => {
+    if (searchTerm && rivers.length) {
+      const results = rivers.filter((r) =>
+        r.toLowerCase().includes(searchTerm.toLowerCase())
       )
       setFiltered(results)
     } else {
-      setFiltered(WATER_BODIES)
+      setFiltered(rivers)
     }
-  }, [searchTerm])
+  }, [searchTerm, rivers])
 
   useEffect(() => {
     setSearchTerm(value)
@@ -60,9 +70,9 @@ export default function RiverSelector({ value, onChange }) {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const handleSelect = (waterbody) => {
-    onChange(waterbody.name)
-    setSearchTerm(waterbody.name)
+  const handleSelect = (riverName) => {
+    onChange(riverName)
+    setSearchTerm(riverName)
     setIsOpen(false)
   }
 
@@ -73,35 +83,38 @@ export default function RiverSelector({ value, onChange }) {
 
   return (
     <div className="form-group autocomplete-container" ref={containerRef}>
-      <label htmlFor="river">Select River/Estuary/Coastal Stretch</label>
+      <label htmlFor="river">Select River/Estuary</label>
       <div className="autocomplete-wrapper">
         <input
           id="river"
           type="text"
           value={searchTerm}
           onChange={handleInputChange}
-          onFocus={() => setIsOpen(true)}
-          placeholder="Search water body..."
+          onFocus={() => selectedState && setIsOpen(true)}
+          placeholder={selectedState ? 'Search river...' : 'Select state first'}
           className="form-input autocomplete-input"
           autoComplete="off"
+          disabled={!selectedState || loading}
         />
+        {loading && <span className="autocomplete-loading">Loading rivers...</span>}
         {isOpen && filtered.length > 0 && (
           <div className="autocomplete-dropdown">
-            {filtered.map((wb, idx) => (
+            {filtered.map((riverName, idx) => (
               <div
                 key={idx}
-                className={`autocomplete-item ${wb.name === value ? 'selected' : ''}`}
-                onClick={() => handleSelect(wb)}
+                className={`autocomplete-item ${riverName === value ? 'selected' : ''}`}
+                onClick={() => handleSelect(riverName)}
               >
-                <div className="item-name">{wb.name}</div>
-                <div className="item-meta">{wb.type} • {wb.state}</div>
+                <div className="item-name">{riverName}</div>
               </div>
             ))}
           </div>
         )}
-        {isOpen && searchTerm && filtered.length === 0 && (
+        {isOpen && searchTerm && filtered.length === 0 && !loading && (
           <div className="autocomplete-dropdown">
-            <div className="autocomplete-item no-results">No water bodies found</div>
+            <div className="autocomplete-item no-results">
+              {rivers.length === 0 && selectedState ? 'No rivers in dataset for this state' : 'No matching rivers'}
+            </div>
           </div>
         )}
       </div>

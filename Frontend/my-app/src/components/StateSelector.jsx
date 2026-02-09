@@ -1,53 +1,42 @@
 import { useState, useRef, useEffect } from 'react'
+import axios from 'axios'
+import { getBackendBase } from '../api'
 import './FormComponents.css'
 
-const STATES = [
-  'Andhra Pradesh',
-  'Arunachal Pradesh',
-  'Assam',
-  'Bihar',
-  'Chhattisgarh',
-  'Goa',
-  'Gujarat',
-  'Haryana',
-  'Himachal Pradesh',
-  'Jharkhand',
-  'Karnataka',
-  'Kerala',
-  'Madhya Pradesh',
-  'Maharashtra',
-  'Manipur',
-  'Meghalaya',
-  'Mizoram',
-  'Nagaland',
-  'Odisha',
-  'Punjab',
-  'Rajasthan',
-  'Sikkim',
-  'Tamil Nadu',
-  'Telangana',
-  'Tripura',
-  'Uttar Pradesh',
-  'Uttarakhand',
-  'West Bengal',
+const FALLBACK_STATES = [
+  'Andhra Pradesh', 'Gujarat', 'Karnataka', 'Kerala', 'Maharashtra',
+  'Odisha', 'Tamil Nadu', 'West Bengal',
 ]
 
 export default function StateSelector({ value, onChange }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [filtered, setFiltered] = useState(STATES)
+  const [states, setStates] = useState(FALLBACK_STATES)
+  const [filtered, setFiltered] = useState(states)
   const [searchTerm, setSearchTerm] = useState(value)
   const containerRef = useRef(null)
 
   useEffect(() => {
+    const url = getBackendBase()
+    axios.get(`${url}/states`, { timeout: 8000 })
+      .then((res) => {
+        if (res.data?.success && Array.isArray(res.data.states) && res.data.states.length > 0) {
+          setStates(res.data.states)
+          setFiltered(res.data.states)
+        }
+      })
+      .catch(() => { /* keep fallback */ })
+  }, [])
+
+  useEffect(() => {
     if (searchTerm) {
-      const results = STATES.filter((state) =>
-        state.toLowerCase().includes(searchTerm.toLowerCase())
+      const results = states.filter((s) =>
+        s.toLowerCase().includes(searchTerm.toLowerCase())
       )
       setFiltered(results)
     } else {
-      setFiltered(STATES)
+      setFiltered(states)
     }
-  }, [searchTerm])
+  }, [searchTerm, states])
 
   useEffect(() => {
     setSearchTerm(value)

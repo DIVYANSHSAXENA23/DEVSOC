@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { getBackendBase } from '../api'
 import Header from '../components/Header'
 import VantaBackground from '../components/VantaBackground'
 import Footer from '../components/Footer'
 import StateSelector from '../components/StateSelector'
 import RiverSelector from '../components/RiverSelector'
+import HeatmapView from '../components/HeatmapView'
 import ResultDisplay from '../components/ResultDisplay'
 import './Dashboard.css'
 
@@ -28,8 +30,22 @@ export default function Dashboard() {
     }
   }, [navigate])
 
+  // Clear river when state changes so user picks a river that exists in dataset
+  useEffect(() => {
+    setRiver('')
+  }, [state])
+
   if (!isAuthed) {
     return null
+  }
+
+  const computeOverallZone = (advisories) => {
+    if (!advisories || advisories.length === 0) return 'Unknown'
+    const zones = advisories.map((a) => (a.zone || '').toString().toLowerCase())
+    if (zones.some((z) => z === 'red' || z === 'high')) return 'Red'
+    if (zones.some((z) => z === 'yellow' || z === 'medium')) return 'Yellow'
+    if (zones.some((z) => z === 'green' || z === 'low')) return 'Green'
+    return 'Unknown'
   }
 
   const handleSubmit = async (e) => {
@@ -44,18 +60,16 @@ export default function Dashboard() {
       setLoading(false)
       return
     }
-
+  
     try {
       const payload = {
         state,
-        river,
+        river_name: river,
       }
 
-      // Replace with your actual backend URL
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000'
-      
+      const BACKEND_URL = getBackendBase()
       const response = await axios.post(
-        `${BACKEND_URL}/api/analyze`,
+        `${BACKEND_URL}/advisory`,
         payload,
         {
           headers: {
@@ -64,50 +78,29 @@ export default function Dashboard() {
         }
       )
 
-      setResult(response.data)
+      const data = response.data || {}
+      const advisories = data.advisories || []
+
+      const transformed = {
+        river_name: data.river_name || river,
+        overall_zone: computeOverallZone(advisories),
+        species: advisories.map((a) => ({
+          name: a.species,
+          scientific_name: a.species,
+          zone: a.zone,
+          latitude: a.latitude,
+          longitude: a.longitude,
+          risk_factors: a.risk_factors,
+          fishing_advisory: a.fishing_advisory,
+          recommended_gear: a.recommended_gear,
+          economic_note: a.economic_note,
+        })),
+      }
+
+      setResult(transformed)
     } catch (err) {
-      // For demo purposes, show a mock response
-      if (err.code === 'ECONNREFUSED' || err.message.includes('Network')) {
-        // Backend not available, show demo response
-        setResult({
-          overall_zone: 'Yellow',
-          river_name: river,
-          species: [
-            {
-              name: 'Hilsa (Tenualosa ilisha)',
-              scientific_name: 'Tenualosa ilisha',
-              zone: 'Red',
-              latitude: 28.6139,
-              longitude: 77.2090,
-              risk_factors: ['High juvenile density during monsoon', 'Disease susceptibility in polluted waters', 'Seasonal migration patterns'],
-              fishing_advisory: 'Prohibited during breeding season (June-August). Strict regulations apply in spawn aggregation areas.',
-              recommended_gear: 'Seine nets with larger mesh size, exclusion zones for juveniles',
-              economic_note: 'Value: ₹200-300 per kg. Economic loss from overfishing: ₹50 crores annually in Ganga'
-            },
-            {
-              name: 'Rohu (Labeo rohita)',
-              scientific_name: 'Labeo rohita',
-              zone: 'Yellow',
-              latitude: 28.6155,
-              longitude: 77.2080,
-              risk_factors: ['Moderate juvenile density', 'Sensitive to temperature variations', 'Competition with invasive species'],
-              fishing_advisory: 'Regulated fishing allowed. Minimum catch size: 40cm. Avoid during monsoon breeding.',
-              recommended_gear: 'Cast nets, hook and line fishing',
-              economic_note: 'Value: ₹120-180 per kg. Important food fish for local communities'
-            },
-            {
-              name: 'Catfish (Ompok pabda)',
-              scientific_name: 'Ompok pabda',
-              zone: 'Green',
-              latitude: 28.6150,
-              longitude: 77.2085,
-              risk_factors: ['Low population pressure', 'Tolerant to environmental stress', 'Limited commercial fishing'],
-              fishing_advisory: 'Sustainable fishing recommended. Good candidate for aquaculture expansion.',
-              recommended_gear: 'Traps, gillnets, hand collection',
-              economic_note: 'Value: ₹80-120 per kg. Growing demand in aquaculture sector'
-            }
-          ]
-        })
+      if (err.code === 'ECONNREFUSED' || err.message?.includes('Network')) {
+        setError('Backend not reachable. Start the API: cd Backend && python start_api.py')
       } else {
         setError(err.response?.data?.detail || err.message || 'Failed to analyze. Please try again.')
       }
@@ -144,7 +137,7 @@ export default function Dashboard() {
               <div className="input-section">
                 <h3 className="input-section-title">Geographic Location</h3>
                 <StateSelector value={state} onChange={setState} />
-                <RiverSelector value={river} onChange={setRiver} />
+                <RiverSelector value={river} onChange={setRiver} state={state} />
               </div>
               
               <button 
@@ -162,6 +155,7 @@ export default function Dashboard() {
           <div className="card output-card">
             <h2>Advisory Output</h2>
             <ResultDisplay result={result} loading={loading} error={error} />
+            <HeatmapView stateName={state} riverName={river} />
           </div>
         </div>
       </div>

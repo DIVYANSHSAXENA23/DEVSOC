@@ -5,7 +5,7 @@ Provides REST API endpoints for querying fish advisories by state and river.
 
 import os
 import sys
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from pathlib import Path
 
 # Add parent directory to path to import from ML folder
@@ -109,12 +109,10 @@ def load_model():
     if model_loaded:
         return
     
-    # Get data path from environment variable or use default
-    data_path = os.getenv(
-        "FISH_DATA_PATH",
-        "converted_final.csv"
-    )
-    
+    # Data path: env FISH_DATA_PATH, or Backend/converted_final.csv
+    default_path = Path(__file__).parent / "converted_final.csv"
+    data_path = os.getenv("FISH_DATA_PATH", str(default_path))
+
     # Check if file exists
     if not Path(data_path).exists():
         raise FileNotFoundError(
@@ -213,12 +211,34 @@ async def get_available_states():
             status_code=503,
             detail="Model not loaded. Please wait for initialization."
         )
-    
+
     states = sorted(df_full["state"].unique().tolist())
     return {
         "success": True,
         "count": len(states),
         "states": states
+    }
+
+
+@app.get("/rivers")
+async def get_available_rivers(state: Optional[str] = None):
+    """Get list of rivers in the dataset, optionally filtered by state."""
+    if not model_loaded or df_full is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Model not loaded. Please wait for initialization."
+        )
+    if "river_name" not in df_full.columns:
+        return {"success": True, "count": 0, "rivers": []}
+
+    subset = df_full
+    if state:
+        subset = df_full[df_full["state"].str.lower() == state.lower()]
+    rivers = sorted(subset["river_name"].astype(str).unique().tolist())
+    return {
+        "success": True,
+        "count": len(rivers),
+        "rivers": rivers
     }
 
 
@@ -237,18 +257,14 @@ async def get_heatmap(request: HeatmapRequest):
             river_name=request.river_name,
             weight=request.weight,
         )
-        if not points:
-            raise HTTPException(
-                status_code=404,
-                detail=f"No records found for state={request.state}, river_name={request.river_name}",
-            )
+        # Return 200 with empty list so frontend can show map + "no data" message
         return {
             "success": True,
             "state": request.state,
             "river_name": request.river_name,
             "weight": request.weight,
             "count": len(points),
-            "points": points,
+            "points": points or [],
         }
     except HTTPException:
         raise
