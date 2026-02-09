@@ -359,26 +359,23 @@ def generate_advisories_for_state(
     model: Pipeline,
     full_df: pd.DataFrame,
     state: str,
-    river_name: Optional[str] = None,
+    river_name: str,
 ) -> List[Dict[str, Any]]:
     """
-    Filter records by state (and optionally brackish water to approximate river/estuary),
-    then return advisory JSON for each matching row.
+    Filter records by state, then return advisory JSON for each matching row.
+    River name is attached to each advisory JSON for frontend display.
 
     Note: current dataset does not contain an explicit river column, so `river_name`
     is used only as a label for your frontend, not as a filter.
     """
     mask = full_df["state"].str.lower() == state.lower()
-    # For river contexts, you may typically care about brackish / estuarine points
     subset = full_df[mask].reset_index(drop=True)
 
     advisories: List[Dict[str, Any]] = []
     for i in range(len(subset)):
-        # Use the subset but keep logic identical
         row_json = generate_advisory_json(model, subset, i)
-        if river_name:
-            # You can attach river_name into the JSON for your API if needed
-            row_json["river_name"] = river_name
+        # Attach river_name to the JSON for your API
+        row_json["river_name"] = river_name
         advisories.append(row_json)
     return advisories
 
@@ -402,8 +399,8 @@ def main():
     parser.add_argument(
         "--river-name",
         type=str,
-        required=False,
-        help="Optional river/estuary name label for the query.",
+        required=True,
+        help="River/estuary name label for the query.",
     )
 
     args = parser.parse_args()
