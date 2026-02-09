@@ -144,5 +144,5 @@ DEVSOC/
 
 ## 📖 Full Documentation
 
-See `ML/API_USAGE.md` for complete API documentation and example
+See `ML/API_USAGE.md` for complete API documentation and example.
 
