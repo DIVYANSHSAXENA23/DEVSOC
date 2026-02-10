@@ -1,7 +1,6 @@
 .site-footer {
   position: static; /* allow footer to flow after content */
   z-index: 5;
-  padding: 1rem 1.25rem; /* compact vertical spacing */
   backdrop-filter: blur(12px) saturate(110%);
   background: linear-gradient(180deg, rgba(11,18,36,0.55), rgba(11,18,36,0.45));
   border-top: 1px solid rgba(255,255,255,0.08);
