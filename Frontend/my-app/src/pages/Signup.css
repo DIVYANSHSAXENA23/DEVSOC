@@ -5,14 +5,10 @@
   display: flex;
   flex-direction: column;
   padding: 0;
-<<<<<<< HEAD
-  overflow-x: hidden;
-=======
   padding-bottom: 70px;
   overflow-x: hidden;
   overflow-y: auto;
   margin: 0;
->>>>>>> fa0824191a54e728956f79612194da43b0a9637f
 }
 
 .signup-main {
@@ -23,27 +19,9 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-<<<<<<< HEAD
-  padding: 3rem 2rem;
-  margin-top: 70px;
-}
-
-.signup-container {
-  position: relative;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: 1200px;
-  padding: 0;
-=======
   padding: 2rem;
   margin-top: 70px;
   min-height: calc(100vh - 70px);
->>>>>>> fa0824191a54e728956f79612194da43b0a9637f
-}
-
 .signup-card {
   background: rgba(11, 18, 36, 0.65);
   backdrop-filter: blur(30px) saturate(140%);
