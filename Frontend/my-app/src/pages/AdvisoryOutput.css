@@ -32,6 +32,67 @@
   letter-spacing: -0.5px;
 }
 
+.advisory-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.advisory-context {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.context-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(10px);
+}
+
+.context-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.65);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 700;
+}
+
+.context-value {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.advisory-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.heatmap-toggle-btn {
+  padding: 0.7rem 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 0.95rem;
+  transition: all 280ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.heatmap-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 34px rgba(2, 6, 23, 0.35);
+}
+
 .back-to-dashboard-btn {
   padding: 0.7rem 1.5rem;
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -53,9 +114,18 @@
 /* Left-right layout: heatmap | advisory */
 .advisory-output-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 0.95fr 1.05fr;
   gap: 2rem;
   align-items: start;
+}
+
+.advisory-output-layout.advisory-output-layout-single {
+  grid-template-columns: 1fr;
+}
+
+.result-panel.result-panel-full {
+  max-height: none;
+  overflow: visible;
 }
 
 .advisory-panel {
@@ -74,12 +144,107 @@
   margin: 0 0 1.5rem 0;
 }
 
+.panel-head {
+  margin-bottom: 1rem;
+}
+
+.panel-subtitle {
+  margin: 0.25rem 0 0;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
 .heatmap-panel h2 {
   display: none;
 }
 
 .result-panel .result-container {
   margin-top: 0;
+}
+
+/* Heatmap overlay + drawer */
+.heatmap-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(2, 6, 23, 0.65);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 70px; /* header height */
+}
+
+.heatmap-drawer {
+  width: min(560px, 92vw);
+  height: calc(100vh - 70px);
+  background: rgba(11, 18, 36, 0.86);
+  border-left: 1px solid rgba(255,255,255,0.08);
+  box-shadow: -18px 0 60px rgba(2, 6, 23, 0.65);
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1.25rem 1.5rem;
+  animation: drawerIn 260ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@keyframes drawerIn {
+  from { transform: translateX(14px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.heatmap-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  color: rgba(255,255,255,0.95);
+  margin-bottom: 0.75rem;
+}
+
+.heatmap-drawer-header h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.heatmap-drawer-header p {
+  margin: 0.25rem 0 0;
+  color: rgba(255,255,255,0.7);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.heatmap-close-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.92);
+  cursor: pointer;
+  transition: all 220ms ease;
+  font-weight: 900;
+}
+
+.heatmap-close-btn:hover {
+  background: rgba(255,255,255,0.14);
+  transform: translateY(-1px);
+}
+
+.heatmap-drawer-body {
+  flex: 1;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.heatmap-drawer-body::-webkit-scrollbar { width: 10px; }
+.heatmap-drawer-body::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.14);
+  border-radius: 999px;
+  border: 2px solid rgba(11,18,36,0.56);
+}
+.heatmap-drawer-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.22);
 }
 
 @keyframes slideUp {
@@ -106,6 +271,14 @@
 
   .advisory-output-header h1 {
     font-size: 1.5rem;
+  }
+
+  .heatmap-overlay {
+    justify-content: center;
+  }
+
+  .heatmap-drawer {
+    width: min(720px, 96vw);
   }
 }
 
