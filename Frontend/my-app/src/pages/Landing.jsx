@@ -24,10 +24,9 @@ export default function Landing() {
       <div className="landing-content">
         <div className="hero-section">
           <h1 className="hero-title">FinTrack</h1>
-          <p className="hero-subtitle">AI environmental insights</p>
+          <p className="hero-subtitle"><div className="test">AI environmental insights</div></p>
           <p className="hero-description">
-            Actionable monitoring and clear analysis for aquatic ecosystems —
-            minimal UI, maximum clarity.
+            <div className="test2">Understand aquatic life. Predict risks. Enable better environmental decisions.</div>
           </p>
 
           <div className="cta-buttons">

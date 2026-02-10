@@ -1,7 +1,8 @@
 .dashboard-page {
   min-height: 100vh;
   padding-bottom: 70px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* Let Vanta background be the only backdrop */
+  background: transparent;
   position: relative;
   display: flex;
   flex-direction: column;
