@@ -35,8 +35,9 @@ export default function AdvisoryOutput() {
 
       <div className="advisory-output-container page-fade-up">
         <div className="advisory-output-header">
-          <div className="advisory-title-block">
-            <h1>Advisory Results</h1>
+          <h1>Advisory Results</h1>
+
+          <div className="advisory-header-row">
             <div className="advisory-context">
               <span className="context-pill">
                 <span className="context-label">State</span>
@@ -47,23 +48,23 @@ export default function AdvisoryOutput() {
                 <span className="context-value">{riverName}</span>
               </span>
             </div>
-          </div>
 
-          <div className="advisory-actions">
-            <button
-              type="button"
-              className="heatmap-toggle-btn"
-              onClick={() => setShowHeatmap(true)}
-            >
-              Juvenile Risk Heatmap
-            </button>
-            <button
-              type="button"
-              className="back-to-dashboard-btn"
-              onClick={() => navigate('/dashboard')}
-            >
-              Back to Dashboard
-            </button>
+            <div className="advisory-actions">
+              <button
+                type="button"
+                className="heatmap-toggle-btn"
+                onClick={() => setShowHeatmap(true)}
+              >
+                Juvenile Risk Heatmap
+              </button>
+              <button
+                type="button"
+                className="back-to-dashboard-btn"
+                onClick={() => navigate('/dashboard')}
+              >
+                Back to Dashboard
+              </button>
+            </div>
           </div>
         </div>
 

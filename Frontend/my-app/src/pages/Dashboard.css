@@ -65,12 +65,14 @@
 }
 
 .card {
-  background: rgba(11,18,36,0.56);
-  backdrop-filter: blur(20px) saturate(110%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)),
+    rgba(7, 16, 41, 0.66);
+  backdrop-filter: blur(22px) saturate(140%);
+  border: 1px solid var(--glass-border);
   border-radius: 20px;
   padding: 2rem;
-  box-shadow: 0 12px 48px rgba(2,6,23,0.6);
+  box-shadow: var(--glass-shadow);
   animation: slideUp 0.6s ease;
 }
 
@@ -123,8 +125,10 @@
 /* Input Section - Geographic Location */
 .input-section {
   padding: 1.5rem;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)),
+    rgba(2, 6, 23, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 12px;
   margin-bottom: 1.5rem;
 }
