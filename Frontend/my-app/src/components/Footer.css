@@ -11,7 +11,7 @@
 
 .footer-container {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 5px auto;
   display: flex;
   /* flex-direction: column; */
   /* gap: 12px; */

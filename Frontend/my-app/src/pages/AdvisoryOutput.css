@@ -240,6 +240,7 @@
   cursor: pointer;
   transition: all 220ms ease;
   font-weight: 900;
+  padding-right: 2rem;
 }
 
 .heatmap-close-btn:hover {

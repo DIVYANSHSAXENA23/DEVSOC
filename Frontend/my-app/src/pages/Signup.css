@@ -5,7 +5,6 @@
   display: flex;
   flex-direction: column;
   padding: 0;
-  padding-bottom: 70px;
   overflow-x: hidden;
   overflow-y: auto;
   margin: 0;
@@ -29,7 +28,7 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 20px;
   padding: 3rem 2.5rem;
-  width: 100%;
+  width: 150%;
   max-width: 440px;
   box-shadow: 0 20px 70px rgba(2, 6, 23, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition: transform 300ms ease, box-shadow 300ms ease;
@@ -74,7 +73,6 @@
 .signup-form {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
 }
 
 .form-group {
@@ -159,7 +157,6 @@
 
 .signup-footer {
   text-align: center;
-  margin-top: 1.5rem;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
 }
