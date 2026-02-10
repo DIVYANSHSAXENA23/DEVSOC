@@ -55,7 +55,13 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  align-items: center; /* vertically center child cards within page */
+  align-items: center;
+}
+
+.dashboard-container.dashboard-only-query {
+  grid-template-columns: 1fr;
+  max-width: 520px;
+  margin-top: 70px;
 }
 
 .card {

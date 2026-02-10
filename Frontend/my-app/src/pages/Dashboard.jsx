@@ -7,14 +7,11 @@ import VantaBackground from '../components/VantaBackground'
 import Footer from '../components/Footer'
 import StateSelector from '../components/StateSelector'
 import RiverSelector from '../components/RiverSelector'
-import HeatmapView from '../components/HeatmapView'
-import ResultDisplay from '../components/ResultDisplay'
 import './Dashboard.css'
 
 export default function Dashboard() {
   const [state, setState] = useState('')
   const [river, setRiver] = useState('')
-  const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [isAuthed, setIsAuthed] = useState(false)
@@ -52,7 +49,6 @@ export default function Dashboard() {
     e.preventDefault()
     setError('')
     setLoading(true)
-    setResult(null)
 
     // Validate inputs
     if (!state || !river) {
@@ -60,7 +56,7 @@ export default function Dashboard() {
       setLoading(false)
       return
     }
-  
+
     try {
       const payload = {
         state,
@@ -97,7 +93,7 @@ export default function Dashboard() {
         })),
       }
 
-      setResult(transformed)
+      navigate('/advisory', { state: { result: transformed, state, river } })
     } catch (err) {
       if (err.code === 'ECONNREFUSED' || err.message?.includes('Network')) {
         setError('Backend not reachable. Start the API: cd Backend && python start_api.py')
@@ -109,28 +105,16 @@ export default function Dashboard() {
     }
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('user')
-    navigate('/')
-  }
-
   return (
     <div className="dashboard-page">
       <VantaBackground effect="WAVES" />
       <Header />
-      
-      <div className="dashboard-header">
-        <h1>ML Environmental Analysis</h1>
-        <button onClick={handleLogout} className="logout-btn">
-          Logout
-        </button>
-      </div>
 
-      <div className="dashboard-container">
+      <div className="dashboard-container dashboard-only-query">
         <div className="input-section-wrapper">
           <div className="card input-card">
             <h2>Query Parameters</h2>
-            
+
             {error && <div className="error-message">{error}</div>}
 
             <form onSubmit={handleSubmit} className="query-form">
@@ -139,23 +123,15 @@ export default function Dashboard() {
                 <StateSelector value={state} onChange={setState} />
                 <RiverSelector value={river} onChange={setRiver} state={state} />
               </div>
-              
-              <button 
-                type="submit" 
+
+              <button
+                type="submit"
                 className="submit-button"
                 disabled={loading}
               >
                 {loading ? 'Analyzing...' : 'Get Advisory'}
               </button>
             </form>
-          </div>
-        </div>
-
-        <div className="output-section-wrapper">
-          <div className="card output-card">
-            <h2>Advisory Output</h2>
-            <ResultDisplay result={result} loading={loading} error={error} />
-            <HeatmapView stateName={state} riverName={river} />
           </div>
         </div>
       </div>
